@@ -16,7 +16,7 @@ type StudentHandler struct {
 func (h *StudentHandler) GetStudents(c *gin.Context) {
 	students, err := h.Service.GetStudents()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch students"})
 		return
 	}
 	c.JSON(http.StatusOK, students)
@@ -35,7 +35,7 @@ func (h *StudentHandler) GetStudentByID(c *gin.Context) {
 func (h *StudentHandler) CreateStudent(c *gin.Context) {
 	var student models.Student
 	if err := c.ShouldBindJSON(&student); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
 		return
 	}
 
@@ -45,7 +45,7 @@ func (h *StudentHandler) CreateStudent(c *gin.Context) {
 	}
 
 	if err := h.Service.CreateStudent(student); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create student"})
 		return
 	}
 
@@ -70,7 +70,7 @@ func (h *StudentHandler) UpdateStudent(c *gin.Context) {
 
 	updated, err := h.Service.UpdateStudent(id, student)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "student not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Student not found"})
 		return
 	}
 
@@ -82,7 +82,7 @@ func (h *StudentHandler) DeleteStudent(c *gin.Context) {
 
 	err := h.Service.DeleteStudent(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "student not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Student not found"})
 		return
 	}
 
