@@ -39,6 +39,11 @@ func (h *StudentHandler) CreateStudent(c *gin.Context) {
 		return
 	}
 
+	if msg := validateStudent(student, true); msg != "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": msg})
+		return
+	}
+
 	if err := h.Service.CreateStudent(student); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -53,6 +58,13 @@ func (h *StudentHandler) UpdateStudent(c *gin.Context) {
 	var student models.Student
 	if err := c.ShouldBindJSON(&student); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
+		return
+	}
+
+	student.Id = id
+
+	if msg := validateStudent(student, false); msg != "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": msg})
 		return
 	}
 
@@ -75,4 +87,20 @@ func (h *StudentHandler) DeleteStudent(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func validateStudent(s models.Student, checkID bool) string {
+	if checkID && s.Id == "" {
+		return "id must not be empty"
+	}
+
+	if s.Name == "" {
+		return "name must not be empty"
+	}
+
+	if s.GPA < 0.00 || s.GPA > 4.00 {
+		return "gpa must be between 0.00 and 4.00"
+	}
+
+	return ""
 }
