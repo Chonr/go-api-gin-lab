@@ -24,3 +24,7 @@ func (s *StudentService) CreateStudent(student models.Student) error {
 func (s *StudentService) UpdateStudent(id string, student models.Student) (*models.Student, error) {
 	return s.Repo.Update(id, student)
 }
+
+func (s *StudentService) DeleteStudent(id string) error {
+	return s.Repo.Delete(id)
+}
